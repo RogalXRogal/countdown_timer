@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="...">
+    <title>Zegary</title>
+
+    <style>
+      body {
+      background-color: black; 
+      margin: 0}
+      .srodek {
+        position: relative; 
+        display: block; margin: 120px auto; 
+        width: 1000px}
+      .srodek > :not(.teraz) {
+        opacity: 0.5}
+      .srodek > :not(.teraz) .zegar {
+        grid-template-columns: repeat(4, 1fr);}
+      .srodek > * {
+        position: relative; 
+        display: block; 
+        margin-bottom: 120px}
+      .srodek > * > .nazwa {
+        position: relative; 
+        display: block; 
+        font: bold 18px sans-serif; 
+        color: #fff; 
+        text-transform: uppercase; 
+        margin-bottom: 15px; 
+        text-align: center;}
+      .srodek > * > .zegar {
+        position: relative; 
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr); 
+        grid-gap: 10px}
+      .srodek > * > .zegar > * {
+        position: relative; 
+        display: grid; 
+        align-items: center; 
+        justify-content: center; 
+        align-content: center; 
+        justify-items: center; 
+        background: #ffffff0a; 
+        height: 150px}
+      .srodek > * > .zegar > * > .liczba {
+        position: relative; 
+        font: 80px sans-serif; 
+        color: #fff;}
+      .srodek > * > .zegar > * > .opis {
+        position: relative; 
+        font: 15px sans-serif; 
+        color: #aaa; 
+        text-transform: uppercase;}
+    </style>
+  </head>
+  <body>
+    <div class="srodek">
+
+      <div class="przeszlosc">
+        <span class="nazwa">Od rozpoczęcia roku szkolnego</span>
+        <div class="zegar">
+          <div class="prze_dni"><span class="liczba">00</span><span class="opis">dni</span></div>
+          <div class="prze_godz"><span class="liczba">00</span><span class="opis">godzin</span></div>
+          <div class="prze_min"><span class="liczba">00</span><span class="opis">minut</span></div>
+          <div class="prze_sek"><span class="liczba">00</span><span class="opis">sekund</span></div>
+        </div>
+      </div>
+
+      <div class="teraz">
+        <span class="nazwa">Aktualna godzina</span>
+        <div class="zegar">
+          <div class="teraz_godz"><span class="liczba">00</span><span class="opis">godzina</span></div>
+          <div class="teraz_min"><span class="liczba">00</span><span class="opis">minuta</span></div>
+          <div class="teraz_sek"><span class="liczba">00</span><span class="opis">sekunda</span></div>
+        </div>
+      </div>
+
+      <div class="przyszlosc">
+        <span class="nazwa">Do końca roku szkolnego</span>
+        <div class="zegar">
+          <div class="przy_dni"><span class="liczba">00</span><span class="opis">dni</span></div>
+          <div class="przy_godz"><span class="liczba">00</span><span class="opis">godzin</span></div>
+          <div class="przy_min"><span class="liczba">00</span><span class="opis">minut</span></div>
+          <div class="przy_sek"><span class="liczba">00</span><span class="opis">sekund</span></div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+
+  <script>
+    /*
+      Miesiące z angielskiego na polski
+      
+      ANG:  Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec
+      POL:  Sty   Lut   Mat   Kwi   Maj   Cze   Lip   Sie   Wrz   Paź   Lis   Gru
+    */
+
+    var przeszlosc = {
+      "data": "Sep 01, 2020 00:00:00", // Tutaj ustawia się datę od której ma liczyć czas
+      "d": document.querySelector('.przeszlosc .zegar .prze_dni .liczba'),
+      "h": document.querySelector('.przeszlosc .zegar .prze_godz .liczba'),
+      "m": document.querySelector('.przeszlosc .zegar .prze_min .liczba'),
+      "s": document.querySelector('.przeszlosc .zegar .prze_sek .liczba')
+    };
+    var teraz = {
+      "h": document.querySelector('.teraz .zegar .teraz_godz .liczba'),
+      "m": document.querySelector('.teraz .zegar .teraz_min .liczba'),
+      "s": document.querySelector('.teraz .zegar .teraz_sek .liczba')
+    };
+    var przyszlosc = {
+      "data": "Jun 25, 2021 00:00:00", // Tutaj ustawia się datę, do której ma odliczać czas
+      "d": document.querySelector('.przyszlosc .zegar .przy_dni .liczba'),
+      "h": document.querySelector('.przyszlosc .zegar .przy_godz .liczba'),
+      "m": document.querySelector('.przyszlosc .zegar .przy_min .liczba'),
+      "s": document.querySelector('.przyszlosc .zegar .przy_sek .liczba')
+    };
+
+    Wyswietl();
+    setInterval(function() {
+      Wyswietl();
+    }, 1000);
+
+    function Wyswietl() {
+      var czas = new Date();
+      var czas_teraz = czas.getTime();
+
+      // Aktualny czas
+      teraz.h.innerHTML = (czas.getHours()<10 ? "0"+ czas.getHours() : czas.getHours());
+      teraz.m.innerHTML = (czas.getMinutes()<10 ? "0"+ czas.getMinutes() : czas.getMinutes());
+      teraz.s.innerHTML = (czas.getSeconds()<10 ? "0"+ czas.getSeconds() : czas.getSeconds());
+
+
+      // Obliczanie czasu od daty
+      var czas_przeszlosc = new Date(przeszlosc.data).getTime();
+      var do_przeszlosci = (czas_teraz - czas_przeszlosc);      
+      
+      var prze_dni = Math.floor(do_przeszlosci / (1000 * 60 * 60 * 24) * 1);
+      var prze_godz = Math.floor((do_przeszlosci % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60) * 1);
+      var prze_min = Math.floor((do_przeszlosci % (1000*60*60))/(1000*60) * 1);
+      var prze_sek = Math.floor((do_przeszlosci % (1000*60))/1000 * 1);
+      przeszlosc.d.innerHTML = (prze_dni < 10 ? "0" + prze_dni : prze_dni);
+      przeszlosc.h.innerHTML = (prze_godz < 10 ? "0" + prze_godz : prze_godz);
+      przeszlosc.m.innerHTML = (prze_min < 10 ? "0" + prze_min : prze_min);
+      przeszlosc.s.innerHTML = (prze_sek < 10 ? "0" + prze_sek : prze_sek);
+
+      
+      // Odliczanie czasu do daty
+      var czas_przyszlosc = new Date(przyszlosc.data).getTime();
+      var do_przyszlosci = czas_przyszlosc - czas_teraz;
+
+      var przy_dni = Math.floor(do_przyszlosci / (1000 * 60 * 60 * 24));
+      var przy_godz = Math.floor((do_przyszlosci % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var przy_min = Math.floor((do_przyszlosci % (1000 * 60 * 60)) / (1000 * 60));
+      var przy_sek = Math.floor((do_przyszlosci % (1000 * 60)) / 1000);
+      przyszlosc.d.innerHTML = (przy_dni < 10 ? "0" + przy_dni : przy_dni);
+      przyszlosc.h.innerHTML = (przy_godz < 10 ? "0" + przy_godz : przy_godz);
+      przyszlosc.m.innerHTML = (przy_min < 10 ? "0" + przy_min : przy_min);
+      przyszlosc.s.innerHTML = (przy_sek < 10 ? "0" + przy_sek : przy_sek);
+
+    }
+  </script>
+</html>
